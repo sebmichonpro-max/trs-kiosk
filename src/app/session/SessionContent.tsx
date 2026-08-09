@@ -21,6 +21,7 @@ import { useCheckpoints } from '@/hooks/useCheckpoints';
 import { useMessages } from '@/hooks/useMessages';
 import { useDailyTarget } from '@/hooks/useDailyTarget';
 import { supabase } from '@/lib/supabase';
+import { calculateTRS } from '@/lib/trs-calc';
 import { OctagonX, Square, BarChart3, Microscope, Package, AlertTriangle, Clock, Zap } from 'lucide-react';
 
 function formatElapsed(seconds: number): string {
@@ -43,10 +44,10 @@ export default function SessionContent() {
     stops,
     activeStop,
     totalStopSeconds,
+    createSession,
     startStop,
     endStop,
     updateQuantities,
-    updateSessionProduct,
     closeSession,
   } = useSession(sessionId);
 
@@ -178,7 +179,50 @@ export default function SessionContent() {
 
   async function handleSMEDConfirm(newProduct: { id: string; effective_cycle_time_ms: number } | null) {
     if (smedStopId) await endStop(smedStopId);
-    if (newProduct) await updateSessionProduct(newProduct.id, newProduct.effective_cycle_time_ms);
+
+    if (newProduct && session && lineId) {
+      const plannedStopSec = stops
+        .filter((s) => {
+          const cause = causes.find((c) => c.id === s.cause_id);
+          return cause?.is_planned;
+        })
+        .reduce((acc, s) => acc + (s.duration_seconds ?? 0), 0);
+
+      const trsValues = calculateTRS(
+        {
+          sessionStartedAt: new Date(session.started_at),
+          sessionEndedAt: new Date(),
+          totalStopSeconds,
+          plannedStopSeconds: plannedStopSec,
+          qtyProduced: session.qty_produced || 0,
+          qtyConforming: session.qty_conforming || 0,
+          cycleTimeMs: session.cycle_time_used_ms || 1000,
+        },
+        thresholds,
+      );
+
+      await closeSession({
+        trs: trsValues.trs,
+        availability: trsValues.availability,
+        performance: trsValues.performance,
+        quality: trsValues.quality,
+        trsLevel: trsValues.trsLevel,
+      });
+
+      const newSessionId = await createSession(
+        lineId,
+        newProduct.id,
+        newProduct.effective_cycle_time_ms,
+        targetQuantity || undefined,
+      );
+
+      if (newSessionId) {
+        const newProductObj = products.find((p) => p.id === newProduct.id);
+        const newProdName = newProductObj?.name ?? '';
+        router.replace(`/session?id=${newSessionId}&line=${lineId}&lineName=${encodeURIComponent(lineName)}&productName=${encodeURIComponent(newProdName)}`);
+      }
+    }
+
     setShowSMEDModal(false);
     setSmedStartedAt(null);
     setSmedStopId(null);
