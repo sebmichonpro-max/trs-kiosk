@@ -15,13 +15,17 @@ export default function NumPad({ value, onChange, label, unit }: NumPadProps) {
       onChange(value.slice(0, -1));
     } else if (key === 'clear') {
       onChange('');
+    } else if (key === '.') {
+      if (value.includes('.')) return;
+      onChange(value === '' ? '0.' : value + '.');
     } else {
       if (value.length >= 8) return;
       onChange(value + key);
     }
   }
 
-  const keys = ['1', '2', '3', '4', '5', '6', '7', '8', '9', 'clear', '0', 'backspace'] as const;
+  const numKeys = ['1', '2', '3', '4', '5', '6', '7', '8', '9'] as const;
+  const bottomKeys = ['clear', '0', '.', 'backspace'] as const;
 
   return (
     <div className="flex flex-col gap-3">
@@ -35,7 +39,19 @@ export default function NumPad({ value, onChange, label, unit }: NumPadProps) {
         {unit && <span className="text-sm text-text-secondary">{unit}</span>}
       </div>
       <div className="grid grid-cols-3 gap-2">
-        {keys.map((key) => (
+        {numKeys.map((key) => (
+          <button
+            key={key}
+            onClick={() => handleKey(key)}
+            className="flex items-center justify-center rounded-2xl font-semibold text-[17px] active:scale-95 transition-transform bg-bg-card border border-border-card text-text hover:border-primary/40"
+            style={{ minWidth: 72, minHeight: 58 }}
+          >
+            {key}
+          </button>
+        ))}
+      </div>
+      <div className="grid grid-cols-4 gap-2">
+        {bottomKeys.map((key) => (
           <button
             key={key}
             onClick={() => handleKey(key)}
@@ -49,12 +65,14 @@ export default function NumPad({ value, onChange, label, unit }: NumPadProps) {
                 : 'bg-bg-card border border-border-card text-text hover:border-primary/40'
               }
             `}
-            style={{ minWidth: 72, minHeight: 58 }}
+            style={{ minHeight: 58 }}
           >
             {key === 'backspace' ? (
               <Delete className="w-6 h-6" />
             ) : key === 'clear' ? (
               'C'
+            ) : key === '.' ? (
+              ','
             ) : (
               key
             )}
