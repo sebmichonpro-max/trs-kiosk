@@ -3,13 +3,14 @@
 @theme inline {
   --color-bg-main: #f8f9fa;
   --color-bg-card: #ffffff;
-  --color-border-card: #e2e8f0;
+  --color-border-card: #e5e7eb;
   --color-primary: #2d5a3d;
+  --color-primary-hover: #1e3f2b;
   --color-success: #22C55E;
   --color-warning: #F59E0B;
   --color-danger: #EF4444;
   --color-text: #1a1a1a;
-  --color-text-secondary: #64748b;
+  --color-text-secondary: #6b7280;
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
 }
 
@@ -30,4 +31,17 @@ body {
 
 .animate-pulse-stop {
   animation: pulse-stop 1.2s ease-in-out infinite;
+}
+
+@keyframes pulse-border {
+  0%, 100% { box-shadow: inset 0 0 0 4px var(--color-danger); }
+  50% { box-shadow: inset 0 0 0 4px transparent; }
+}
+
+.trs-alert-red {
+  animation: pulse-border 1.5s ease-in-out infinite;
+}
+
+.trs-alert-orange {
+  box-shadow: inset 0 0 0 4px var(--color-warning);
 }

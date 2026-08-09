@@ -77,7 +77,12 @@ export function useSession(sessionId: string | null) {
     };
   }, [sessionId, fetchStops]);
 
-  async function createSession(lineId: string, productId: string, cycleTimeMs: number): Promise<string | null> {
+  async function createSession(
+    lineId: string,
+    productId: string,
+    cycleTimeMs: number,
+    dailyTarget?: number
+  ): Promise<string | null> {
     const { data, error: err } = await supabase
       .from('production_sessions')
       .insert({
@@ -86,6 +91,8 @@ export function useSession(sessionId: string | null) {
         product_id: productId,
         started_at: new Date().toISOString(),
         cycle_time_used_ms: cycleTimeMs,
+        daily_target: dailyTarget || null,
+        status: 'active',
       })
       .select('id')
       .single();
@@ -142,7 +149,11 @@ export function useSession(sessionId: string | null) {
     return true;
   }
 
-  async function addManualStop(causeId: string, durationMinutes: number, notes?: string): Promise<boolean> {
+  async function addManualStop(
+    causeId: string,
+    durationMinutes: number,
+    notes?: string
+  ): Promise<boolean> {
     if (!sessionId) return false;
 
     const now = new Date();
@@ -168,7 +179,54 @@ export function useSession(sessionId: string | null) {
     return true;
   }
 
-  async function closeSession(qtyProduced: number, qtyNonConforming: number, trsValues: {
+  async function updateQuantities(
+    goodQty: number,
+    rejectQty: number
+  ): Promise<boolean> {
+    if (!sessionId || !session) return false;
+
+    const newQtyProduced = (session.qty_produced || 0) + goodQty + rejectQty;
+    const newQtyConforming = (session.qty_conforming || 0) + goodQty;
+
+    const { error: err } = await supabase
+      .from('production_sessions')
+      .update({
+        qty_produced: newQtyProduced,
+        qty_conforming: newQtyConforming,
+      })
+      .eq('id', sessionId);
+
+    if (err) {
+      setError(err.message);
+      return false;
+    }
+    await fetchSession();
+    return true;
+  }
+
+  async function updateSessionProduct(
+    productId: string,
+    cycleTimeMs: number
+  ): Promise<boolean> {
+    if (!sessionId) return false;
+
+    const { error: err } = await supabase
+      .from('production_sessions')
+      .update({
+        product_id: productId,
+        cycle_time_used_ms: cycleTimeMs,
+      })
+      .eq('id', sessionId);
+
+    if (err) {
+      setError(err.message);
+      return false;
+    }
+    await fetchSession();
+    return true;
+  }
+
+  async function closeSession(trsValues: {
     trs: number;
     availability: number;
     performance: number;
@@ -177,12 +235,16 @@ export function useSession(sessionId: string | null) {
   }): Promise<boolean> {
     if (!sessionId) return false;
 
+    const openStops = stops.filter((s) => !s.ended_at);
+    for (const stop of openStops) {
+      await endStop(stop.id);
+    }
+
     const { error: err } = await supabase
       .from('production_sessions')
       .update({
         ended_at: new Date().toISOString(),
-        qty_produced: qtyProduced,
-        qty_conforming: qtyProduced - qtyNonConforming,
+        status: 'completed',
         trs: trsValues.trs,
         availability: trsValues.availability,
         performance: trsValues.performance,
@@ -199,7 +261,9 @@ export function useSession(sessionId: string | null) {
     return true;
   }
 
-  async function findActiveSession(lineId: string): Promise<ProductionSession | null> {
+  async function findActiveSession(
+    lineId: string
+  ): Promise<ProductionSession | null> {
     const { data } = await supabase
       .from('production_sessions')
       .select('*')
@@ -234,6 +298,8 @@ export function useSession(sessionId: string | null) {
     startStop,
     endStop,
     addManualStop,
+    updateQuantities,
+    updateSessionProduct,
     closeSession,
     findActiveSession,
     refetch: fetchSession,

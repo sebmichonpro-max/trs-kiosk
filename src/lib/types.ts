@@ -62,6 +62,8 @@ export interface ProductionSession {
   performance: number | null;
   quality: number | null;
   trs_level: 'excellent' | 'good' | 'warning' | 'critical' | null;
+  daily_target: number | null;
+  status: 'active' | 'completed' | 'cancelled' | null;
   created_by: string | null;
   created_at: string;
   updated_at: string;
@@ -77,4 +79,10 @@ export interface ProductionStop {
   duration_seconds: number | null;
   notes: string | null;
   created_at: string;
+}
+
+export interface QuantityEntry {
+  timestamp: string;
+  goodQty: number;
+  rejectQty: number;
 }
