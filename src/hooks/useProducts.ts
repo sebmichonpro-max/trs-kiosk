@@ -46,7 +46,7 @@ export function useProducts(lineId: string | null) {
       );
 
       const { data: prods, error: pErr } = await supabase
-        .from('products')
+        .from('pp_products')
         .select('id, organization_id, name, cycle_time_ms, unit_label, is_active')
         .eq('organization_id', ORGANIZATION_ID)
         .eq('is_active', true)

@@ -66,7 +66,7 @@ export default function SessionContent() {
       }
       if (!productName && session.product_id) {
         const { data } = await supabase
-          .from('products')
+          .from('pp_products')
           .select('name')
           .eq('id', session.product_id)
           .single();

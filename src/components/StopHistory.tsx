@@ -19,7 +19,7 @@ function formatDuration(seconds: number): string {
 
 const CATEGORY_COLORS: Record<string, string> = {
   availability: 'bg-primary/15 text-primary',
-  performance: 'bg-purple-500/15 text-purple-400',
+  performance: 'bg-purple-500/15 text-purple-600',
   quality: 'bg-success/15 text-success',
 };
 
@@ -61,8 +61,8 @@ export default function StopHistory({ stops, causes }: StopHistoryProps) {
               const cause = causeMap.get(causeId);
               const pct = (dur / totalPareto) * 100;
               const colors: Record<string, string> = {
-                availability: '#2563EB',
-                performance: '#A855F7',
+                availability: '#2d5a3d',
+                performance: '#7c3aed',
                 quality: '#22C55E',
               };
               return (

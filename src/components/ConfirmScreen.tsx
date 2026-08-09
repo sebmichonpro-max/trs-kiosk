@@ -13,7 +13,7 @@ interface ConfirmScreenProps {
 
 const LEVEL_COLORS: Record<string, string> = {
   excellent: '#22C55E',
-  good: '#2563EB',
+  good: '#2d5a3d',
   warning: '#F59E0B',
   critical: '#EF4444',
 };
@@ -26,7 +26,7 @@ const LEVEL_LABELS: Record<string, string> = {
 };
 
 export default function ConfirmScreen({ lineName, productName, duration, trs, onNewSession }: ConfirmScreenProps) {
-  const color = LEVEL_COLORS[trs.trsLevel] ?? '#2563EB';
+  const color = LEVEL_COLORS[trs.trsLevel] ?? '#2d5a3d';
   const trsPct = Math.round(trs.trs * 100);
 
   const gaugeSize = 180;
@@ -63,7 +63,7 @@ export default function ConfirmScreen({ lineName, productName, duration, trs, on
               cy={gaugeSize / 2}
               r={radius}
               fill="none"
-              stroke="#1E293B"
+              stroke="#e2e8f0"
               strokeWidth={strokeWidth}
             />
             <circle

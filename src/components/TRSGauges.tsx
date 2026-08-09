@@ -25,7 +25,7 @@ function Gauge({ value, label, color, size = 120 }: GaugeProps) {
             cy={size / 2}
             r={radius}
             fill="none"
-            stroke="#1E293B"
+            stroke="#e2e8f0"
             strokeWidth={strokeWidth}
           />
           <circle
@@ -66,7 +66,7 @@ export default function TRSGauges({ availability, performance, quality, trs }: T
         TRS Temps réel
       </h3>
       <div className="flex justify-center mb-6">
-        <Gauge value={trs} label="TRS Global" color="#2563EB" size={140} />
+        <Gauge value={trs} label="TRS Global" color="#2d5a3d" size={140} />
       </div>
       <div className="flex justify-around">
         <Gauge value={availability} label="Disponibilité" color="#22C55E" size={100} />

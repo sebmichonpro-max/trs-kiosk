@@ -30,7 +30,7 @@ export default function Header({ lineName, onBack }: HeaderProps) {
   }, []);
 
   return (
-    <header className="flex items-center justify-between px-6 py-4 border-b border-border-card bg-bg-card/60 backdrop-blur-sm">
+    <header className="flex items-center justify-between px-6 py-4 border-b border-border-card bg-white/80 backdrop-blur-sm">
       <div className="flex items-center gap-4">
         {onBack && (
           <button

@@ -14,7 +14,7 @@ interface StopModalProps {
 
 const CATEGORY_STYLES: Record<string, { bg: string; border: string; badge: string; label: string }> = {
   availability: { bg: 'bg-primary/10', border: 'border-primary/30', badge: 'bg-primary/15 text-primary', label: 'Disponibilité' },
-  performance: { bg: 'bg-purple-500/10', border: 'border-purple-500/30', badge: 'bg-purple-500/15 text-purple-400', label: 'Performance' },
+  performance: { bg: 'bg-purple-500/10', border: 'border-purple-500/30', badge: 'bg-purple-500/15 text-purple-600', label: 'Performance' },
   quality: { bg: 'bg-success/10', border: 'border-success/30', badge: 'bg-success/15 text-success', label: 'Qualité' },
 };
 
@@ -38,7 +38,7 @@ export default function StopModal({ causes, onStartRealtime, onAddManual, onClos
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
       <div className="w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-[20px] bg-bg-card border border-border-card">
         <div className="flex items-center justify-between p-6 border-b border-border-card">
           <h2 className="text-xl font-bold text-text">Déclarer un arrêt</h2>
