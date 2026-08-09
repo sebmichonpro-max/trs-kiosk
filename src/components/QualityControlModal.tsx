@@ -40,10 +40,11 @@ export default function QualityControlModal({
   const [savedControlId, setSavedControlId] = useState<string | null>(null);
   const printRef = useRef<HTMLDivElement>(null);
 
-  const thresholdWarn = o2ThresholdWarning ?? 1.0;
-  const thresholdCrit = o2ThresholdCritical ?? 2.0;
+  const thresholdWarn = o2ThresholdWarning ?? 1.5;
+  const thresholdCrit = o2ThresholdCritical ?? 2.5;
   const tolerance = tolerancePercent ?? 5.0;
-  const theoWeight = theoreticalWeight ?? 0;
+  const [manualWeight, setManualWeight] = useState('');
+  const theoWeight = theoreticalWeight ?? (parseFloat(manualWeight) || 0);
 
   const o2Num = parseFloat(o2Value) || 0;
   const o2Status = o2Value === '' ? null : o2Num > thresholdCrit ? 'critical' : o2Num > thresholdWarn ? 'warning' : 'good';
@@ -210,10 +211,24 @@ export default function QualityControlModal({
                 <p className="text-sm font-medium text-text">Pesée — 20 barquettes</p>
                 {theoWeight > 0 && (
                   <p className="text-xs text-text-secondary">
-                    Théorique : {theoWeight}g (±{tolerance}%)
+                    Cible : {theoWeight}g (±{tolerance}%)
                   </p>
                 )}
               </div>
+
+              {!theoreticalWeight && (
+                <div className="flex items-center gap-2 mb-4 p-3 rounded-xl bg-warning/10 border border-warning/20">
+                  <label className="text-xs font-medium text-text-secondary whitespace-nowrap">Poids cible (g) :</label>
+                  <input
+                    type="number"
+                    inputMode="decimal"
+                    value={manualWeight}
+                    onChange={(e) => setManualWeight(e.target.value)}
+                    placeholder="Ex: 250"
+                    className="flex-1 h-10 px-3 rounded-xl bg-bg-main border border-border-card text-text text-sm font-bold text-center focus:outline-none focus:border-primary"
+                  />
+                </div>
+              )}
 
               <div className="grid grid-cols-5 gap-1.5 mb-4">
                 {weights.map((w, i) => {
