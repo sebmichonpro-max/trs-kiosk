@@ -13,6 +13,10 @@ export interface Product {
   cycle_time_ms: number;
   unit_label: string;
   is_active: boolean;
+  theoretical_weight: number | null;
+  weight_tolerance_percent: number | null;
+  o2_threshold_warning: number | null;
+  o2_threshold_critical: number | null;
 }
 
 export interface LineProduct {
@@ -79,6 +83,67 @@ export interface ProductionStop {
   duration_seconds: number | null;
   notes: string | null;
   created_at: string;
+}
+
+export interface ProductionCheckpoint {
+  id: string;
+  organization_id: string;
+  session_id: string;
+  good_quantity: number;
+  reject_quantity: number;
+  comment: string | null;
+  created_at: string;
+}
+
+export interface ShopFloorMessage {
+  id: string;
+  organization_id: string;
+  message: string;
+  priority: 'info' | 'urgent';
+  target: 'all' | 'trs' | 'pointage';
+  target_line_id: string | null;
+  sent_by: string | null;
+  is_read: boolean;
+  created_at: string;
+}
+
+export interface DailyProductionTarget {
+  id: string;
+  organization_id: string;
+  line_id: string;
+  product_id: string;
+  target_date: string;
+  target_quantity: number;
+  created_by: string | null;
+  created_at: string;
+}
+
+export interface QualityControl {
+  id: string;
+  organization_id: string;
+  session_id: string;
+  line_id: string;
+  product_id: string;
+  control_type: 'o2' | 'weight' | 'combined';
+  o2_level: number | null;
+  o2_conformity: boolean | null;
+  weight_average: number | null;
+  weight_min: number | null;
+  weight_max: number | null;
+  weight_std_dev: number | null;
+  weight_out_of_tolerance: number | null;
+  theoretical_weight: number | null;
+  tolerance_percent: number | null;
+  comment: string | null;
+  controlled_at: string;
+}
+
+export interface QualityControlWeight {
+  id: string;
+  control_id: string;
+  position: number;
+  weight: number;
+  is_conforming: boolean;
 }
 
 export interface QuantityEntry {

@@ -1,14 +1,17 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { ArrowLeft, RefreshCw } from 'lucide-react';
+import { ArrowLeft, RefreshCw, Microscope, BarChart3 } from 'lucide-react';
 
 interface HeaderProps {
   lineName?: string;
   productName?: string;
   onBack?: () => void;
   onSMED?: () => void;
+  onQualityControl?: () => void;
+  onCheckpoint?: () => void;
   showSMED?: boolean;
+  showActions?: boolean;
 }
 
 function formatTime(d: Date): string {
@@ -19,7 +22,7 @@ function formatTime(d: Date): string {
   });
 }
 
-export default function Header({ lineName, productName, onBack, onSMED, showSMED }: HeaderProps) {
+export default function Header({ lineName, productName, onBack, onSMED, onQualityControl, onCheckpoint, showSMED, showActions = true }: HeaderProps) {
   const [now, setNow] = useState(new Date());
 
   useEffect(() => {
@@ -51,17 +54,35 @@ export default function Header({ lineName, productName, onBack, onSMED, showSMED
         </div>
       )}
 
-      <div className="flex items-center gap-2">
-        {showSMED && onSMED && (
-          <button
-            onClick={onSMED}
-            className="flex items-center gap-2 h-12 px-5 rounded-2xl bg-warning text-text font-semibold active:scale-[0.97] transition-all text-sm"
-          >
-            <RefreshCw className="w-5 h-5" />
-            Changement
-          </button>
-        )}
-      </div>
+      {showActions && (
+        <div className="flex items-center gap-2">
+          {showSMED && onSMED && (
+            <button
+              onClick={onSMED}
+              className="flex items-center gap-2 h-12 px-5 rounded-2xl bg-warning text-text font-semibold active:scale-[0.97] transition-all text-sm"
+            >
+              <RefreshCw className="w-5 h-5" />
+              Changement
+            </button>
+          )}
+          {onQualityControl && (
+            <button
+              onClick={onQualityControl}
+              className="flex items-center gap-2 h-12 px-4 rounded-2xl bg-primary/10 text-primary font-semibold active:scale-[0.97] transition-all text-sm border border-primary/20"
+            >
+              <Microscope className="w-5 h-5" />
+            </button>
+          )}
+          {onCheckpoint && (
+            <button
+              onClick={onCheckpoint}
+              className="flex items-center gap-2 h-12 px-4 rounded-2xl bg-primary/10 text-primary font-semibold active:scale-[0.97] transition-all text-sm border border-primary/20"
+            >
+              <BarChart3 className="w-5 h-5" />
+            </button>
+          )}
+        </div>
+      )}
     </header>
   );
 }

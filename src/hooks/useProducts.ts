@@ -26,7 +26,8 @@ export function useProducts(lineId: string | null) {
       const { data: lineProducts, error: lpErr } = await supabase
         .from('line_products')
         .select('product_id, cycle_time_override_ms')
-        .eq('line_id', lineId);
+        .eq('line_id', lineId)
+        .eq('organization_id', ORGANIZATION_ID);
 
       if (lpErr) {
         setError(lpErr.message);
@@ -47,7 +48,7 @@ export function useProducts(lineId: string | null) {
 
       const { data: prods, error: pErr } = await supabase
         .from('pp_products')
-        .select('id, organization_id, name, cycle_time_ms, unit_label, is_active')
+        .select('id, organization_id, name, cycle_time_ms, unit_label, is_active, theoretical_weight, weight_tolerance_percent, o2_threshold_warning, o2_threshold_critical')
         .eq('organization_id', ORGANIZATION_ID)
         .eq('is_active', true)
         .is('deleted_at', null)
