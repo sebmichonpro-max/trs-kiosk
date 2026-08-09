@@ -75,7 +75,7 @@ export default function QuantityPanel({
               />
               <button
                 onClick={() => setStep('reject')}
-                disabled={!goodValue || parseInt(goodValue) <= 0}
+                disabled={goodValue === ''}
                 className="w-full mt-3 h-14 rounded-2xl bg-primary text-white font-semibold text-[17px] active:scale-[0.97] transition-all disabled:opacity-40 hover:bg-primary-hover"
               >
                 Suivant → Rebuts
