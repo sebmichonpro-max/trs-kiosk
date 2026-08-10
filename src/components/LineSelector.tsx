@@ -46,11 +46,11 @@ export default function LineSelector({ lines, onSelect }: LineSelectorProps) {
               onClick={() => onSelect(line, activeSessions[line.id] ?? null)}
               className={`
                 relative flex flex-col items-center justify-center gap-3
-                p-6 rounded-[20px] border transition-all active:scale-[0.97]
+                p-6 rounded-[20px] border transition-colors active:scale-[0.97]
                 min-h-[140px]
                 ${hasSession
-                  ? 'bg-success/10 border-success/40 shadow-[0_0_20px_rgba(34,197,94,0.1)]'
-                  : 'bg-bg-card border-border-card hover:border-primary/40'
+                  ? 'bg-success/10 border-success/40'
+                  : 'bg-bg-card border-border-card'
                 }
               `}
             >
